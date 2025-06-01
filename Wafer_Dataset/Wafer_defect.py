@@ -267,6 +267,7 @@ plt.show()
 # stage_counts = Wafer_df_cleaned['equipment_log'].value_counts()
 # print(stage_counts)
 
+
 # =============================================================================
 # End 
 # =============================================================================
@@ -275,50 +276,147 @@ plt.show()
 # Checking correlation to determine dependency
 # =============================================================================
 # Compute correlation matrix
-correlation_matrix = Wafer_df_cleaned.corr(numeric_only=True)
+correlation_matrix = Wafer_df.corr(numeric_only=True)
 
 # Plot heatmap to determine the correlation between data
 plt.figure(figsize=(10, 8))
 sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
 plt.title('Correlation Heatmap of Wafer Dataset')
 plt.show()
+
+# Create the ratio column
+Wafer_df['temperature_C_*_hour'] =Wafer_df['hour']*Wafer_df['temperature_C'] 
+
+# Drop the individual columns
+Wafer_df = Wafer_df.drop(columns=['temperature_C', 'hour'])
+
+# Compute correlation matrix
+correlation_matrix = Wafer_df.corr(numeric_only=True)
+
+# Plot the heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Correlation Heatmap of Wafer Dataset (temperature_C/hour only)')
+plt.show()
+
+
+# Create the new feature column: pressure_mbar * exposure_time_ms
+Wafer_df['pressure_*_exposure'] = Wafer_df['pressure_mbar']* Wafer_df['exposure_time_ms']
+
+# Drop the individual columns
+Wafer_df = Wafer_df.drop(columns=['pressure_mbar', 'exposure_time_ms'])
+
+# Compute correlation matrix
+correlation_matrix = Wafer_df.corr(numeric_only=True)
+
+# Plot the heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Correlation Heatmap of Wafer Dataset (with pressure_*_exposure)')
+plt.show()
+
+
 # =============================================================================
 # 
 # =============================================================================
+
+
+# import numpy as np
+
+# from sklearn.linear_model import LinearRegression
+# from sklearn.model_selection import train_test_split
+# from sklearn.metrics import mean_squared_error, r2_score
+
+# # Define features and target
+# features = ['temperature_C', 'pressure_mbar', 'hour', 'exposure_time_ms']
+# X = Wafer_df[features]
+# y = Wafer_df['defect_count']
+
+# # Train-test split
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# # Initialize and train model
+# lin_reg = LinearRegression()
+# lin_reg.fit(X_train, y_train)
+
+# # Predict
+# y_pred = lin_reg.predict(X_test)
+
+# # Evaluate
+# mse = mean_squared_error(y_test, y_pred)
+# r2 = r2_score(y_test, y_pred)
+
+# print("Linear Regression Results:")
+# print("MSE (lower is better) :", mse)
+# print("R² score (near to 1 is better):", r2)
+
+# import numpy as np
+# from sklearn.linear_model import LinearRegression
+# from sklearn.model_selection import train_test_split
+# from sklearn.metrics import mean_squared_error, r2_score
+
+# # Create new feature
+# Wafer_df['temperature_C_*_hour'] =Wafer_df['hour']*Wafer_df['temperature_C'] 
+
+# # Drop individual columns (optional but recommended)
+# Wafer_df = Wafer_df.drop(columns=['temperature_C', 'hour'])
+
+# # Define new feature set and target
+# features = ['temperature_C_*_hour', 'pressure_mbar', 'exposure_time_ms']
+# X = Wafer_df[features]
+# y = Wafer_df['defect_count']
+
+# # Train-test split
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# # Initialize and train model
+# lin_reg = LinearRegression()
+# lin_reg.fit(X_train, y_train)
+
+# # Predict
+# y_pred = lin_reg.predict(X_test)
+
+# # Evaluate
+# mse = mean_squared_error(y_test, y_pred)
+# r2 = r2_score(y_test, y_pred)
+
+# print("Linear Regression Results (with temperature_C_*_hour):")
+# print("MSE (lower is better):", mse)
+# print("R² score (near to 1 is better):", r2)
 
 # =============================================================================
 #  From heat map plot determined target that can be
 #  predicted which is  defect_count based on 
 #  temp , pressure , hour , exposure time
 # =============================================================================
-import numpy as np
+# import numpy as np
 
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, r2_score
+# from sklearn.linear_model import LinearRegression
+# from sklearn.model_selection import train_test_split
+# from sklearn.metrics import mean_squared_error, r2_score
 
-# Define features and target
-features = ['temperature_C', 'pressure_mbar', 'hour', 'exposure_time_ms']
-X = Wafer_df_cleaned[features]
-y = Wafer_df_cleaned['defect_count']
+# # Define features and target
+# features = ['temperature_C', 'pressure_mbar', 'hour', 'exposure_time_ms']
+# X = Wafer_df[features]
+# y = Wafer_df['defect_count']
 
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# # Train-test split
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Initialize and train model
-lin_reg = LinearRegression()
-lin_reg.fit(X_train, y_train)
+# # Initialize and train model
+# lin_reg = LinearRegression()
+# lin_reg.fit(X_train, y_train)
 
-# Predict
-y_pred = lin_reg.predict(X_test)
+# # Predict
+# y_pred = lin_reg.predict(X_test)
 
-# Evaluate
-mse = mean_squared_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
+# # Evaluate
+# mse = mean_squared_error(y_test, y_pred)
+# r2 = r2_score(y_test, y_pred)
 
-print("Linear Regression Results:")
-print("MSE (lower is better) :", mse)
-print("R² score (near to 1 is better):", r2)
+# print("Linear Regression Results:")
+# print("MSE (lower is better) :", mse)
+# print("R² score (near to 1 is better):", r2)
 
 
 
